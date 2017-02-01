@@ -1,0 +1,117 @@
+apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "dispatch.digital.fareestimater"
+        minSdkVersion 21
+        targetSdkVersion 25
+        versionCode 1
+        versionName "0.1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    def keyStorePath = System.getenv('ANDROID_KEYSTORE_PATH')
+    keyStorePath = keyStorePath == null ? 'C:/KeyStore/' : keyStorePath
+
+    File propsFile = new File(keyStorePath + 'keyStoreProperties.txt')
+    def localKeyStore = propsFile.exists()
+
+    if (localKeyStore) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+
+        def debugConfigName = 'debug'
+        def releaseConfigName = 'release'
+
+        signingConfigs {
+            debug {
+                storeFile = file(keyStorePath + props[debugConfigName + 'StoreFile'])
+                storePassword = props[debugConfigName + 'StorePassword']
+                keyAlias = props[debugConfigName + 'KeyAlias']
+                keyPassword = props[debugConfigName + 'KeyPassword']
+            }
+
+            release {
+                storeFile = file(keyStorePath + props[releaseConfigName + 'StoreFile'])
+                storePassword = props[releaseConfigName + 'StorePassword']
+                keyAlias = props[releaseConfigName + 'KeyAlias']
+                keyPassword = props[releaseConfigName + 'KeyPassword']
+
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            if (localKeyStore) signingConfig signingConfigs.debug
+            versionNameSuffix "debug"
+        }
+        release {
+            debuggable false
+            minifyEnabled true
+            if (localKeyStore) signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+}
+
+final SUPPORT_LIBRARY_VERSION = "25.1.1"
+final GMS_VERSION = '10.0.1'
+final TIMBER_VERSION = '4.3.0'
+final BUTTER_KNIFE_VERSION = '8.2.1'
+final STETHO_VERSION = '1.3.1'
+
+final RETROFIT_VERSION = '2.1.0'
+final OK_HTTP_VERSION = '3.3.1'
+final RX_JAVA_VERSION = '1.1.6'
+final RX_ANDROID_VERSION = '1.2.1'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile "com.android.support:design:${SUPPORT_LIBRARY_VERSION}"
+    compile "com.google.android.gms:play-services-maps:${GMS_VERSION}"
+
+    // Retrofit
+    compile("com.squareup.retrofit2:retrofit:$RETROFIT_VERSION") {
+        // exclude Retrofit’s OkHttp peer-dependency module and define your own module import
+        exclude module: 'okhttp'
+    }
+    compile "com.squareup.retrofit2:converter-gson:$RETROFIT_VERSION"
+    compile "com.squareup.retrofit2:adapter-rxjava:$RETROFIT_VERSION"
+
+    compile "com.squareup.okhttp3:okhttp:$OK_HTTP_VERSION"
+    compile "com.squareup.okhttp3:logging-interceptor:$OK_HTTP_VERSION"
+
+    //Reactive
+    compile "io.reactivex:rxjava:$RX_JAVA_VERSION"
+    compile "io.reactivex:rxandroid:$RX_ANDROID_VERSION"
+
+    // Misc
+    // https://github.com/JakeWharton/timber/issues/100
+    compile "com.jakewharton.timber:timber:$TIMBER_VERSION"
+
+    compile "com.jakewharton:butterknife:$BUTTER_KNIFE_VERSION"
+    apt "com.jakewharton:butterknife-compiler:$BUTTER_KNIFE_VERSION"
+
+    // Stetho
+    debugCompile "com.facebook.stetho:stetho:$STETHO_VERSION"
+    debugCompile "com.facebook.stetho:stetho-okhttp3:$STETHO_VERSION"
+
+    testCompile 'junit:junit:4.12'
+
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+}
