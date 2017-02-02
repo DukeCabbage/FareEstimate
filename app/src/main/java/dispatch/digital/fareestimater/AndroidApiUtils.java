@@ -22,7 +22,7 @@ public class AndroidApiUtils {
         return result;
     }
 
-    public static boolean locationPermissionGranted(Context context) {
-        return (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+    public static boolean hasGetLocationPermission(Context context) {
+        return ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 }

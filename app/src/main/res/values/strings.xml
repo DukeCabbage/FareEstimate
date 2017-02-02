@@ -13,4 +13,6 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="menu_action_log_out">Log out</string>
+    <string name="err_cannot_connect_google_client">Not able to connect to Google location client</string>
 </resources>
