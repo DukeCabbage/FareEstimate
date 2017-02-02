@@ -1,4 +1,4 @@
-package dispatch.digital.fareestimater;
+package dispatch.digital.fareestimater.MainMap;
 
 import android.content.Context;
 import android.location.Location;
@@ -19,20 +19,22 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import dispatch.digital.fareestimater.AndroidApiUtils;
+import dispatch.digital.fareestimater.R;
 import timber.log.Timber;
 
-public class MainPresenter implements MainContract.Presenter,
+public class MainPresenter implements MainMapContract.Presenter,
                                       GoogleApiClient.ConnectionCallbacks,
                                       GoogleApiClient.OnConnectionFailedListener {
 
     final private GoogleApiClient mGoogleApiClient;
     final private Context mContext;
-    final private MainContract.View mView;
+    final private MainMapContract.View mView;
     final private LocationListener mLocationListener;
 
     private Location mLastLocation;
 
-    public MainPresenter(@NonNull Context context, @NonNull final MainContract.View mainView) {
+    public MainPresenter(@NonNull Context context, @NonNull final MainMapContract.View mainView) {
         this.mContext = context;
         this.mView = mainView;
         this.mGoogleApiClient = new GoogleApiClient.Builder(context)
@@ -70,6 +72,14 @@ public class MainPresenter implements MainContract.Presenter,
         return mLastLocation;
     }
 
+    /**
+     * Check the following requirements in the these orders,
+     * 1. Google client is connected
+     * 2. Location service is turned on, if not call {@link MainMapContract.View#askForLocationService(Status)}
+     * 3. Permission to access location, if not ask {@link MainMapContract.View#askForLocationPermission()}
+     *
+     * If everything checks out, start periodic location update
+     */
     @Override
     public void startLocationUpdates() {
         if (mGoogleApiClient == null || !mGoogleApiClient.isConnected()) {
@@ -116,9 +126,6 @@ public class MainPresenter implements MainContract.Presenter,
      * It is a good practice to remove location requests when the activity is in a paused or
      * stopped state. Doing so helps battery performance and is especially
      * recommended in applications that request frequent location updates.
-     * <p/>
-     * The final argument to {@code requestLocationUpdates()} is a LocationListener
-     * (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
      */
     private void stopLocationUpdates() {
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {

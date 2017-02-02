@@ -1,8 +1,8 @@
-package dispatch.digital.fareestimater;
+package dispatch.digital.fareestimater.MainMap;
 
 import android.location.Location;
 
-public interface MainContract {
+public interface MainMapContract {
 
     int REQUEST_CODE_LOCATION_SERVICE = 111;
 

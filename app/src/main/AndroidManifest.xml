@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="dispatch.digital.fareestimater">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -9,19 +10,25 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true">
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/app_name">
-        </activity>
+        android:supportsRtl="true"
+        tools:ignore="InnerclassSeparator">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".MainMap.MainActivity"
             android:theme="@style/FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".SearchAddress.SearchAddressActivity"
+            android:theme="@style/FullScreen"
+            android:parentActivityName=".MainMap.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainMap.MainActivity"/>
         </activity>
 
         <meta-data

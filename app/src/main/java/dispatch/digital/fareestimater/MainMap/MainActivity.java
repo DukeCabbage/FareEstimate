@@ -1,4 +1,4 @@
-package dispatch.digital.fareestimater;
+package dispatch.digital.fareestimater.MainMap;
 
 import android.Manifest;
 import android.app.Activity;
@@ -6,13 +6,13 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -27,20 +27,30 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import dispatch.digital.fareestimater.AndroidApiUtils;
+import dispatch.digital.fareestimater.R;
+import dispatch.digital.fareestimater.SearchAddress.SearchAddressActivity;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity
-        implements MainContract.View {
+        implements MainMapContract.View {
 
-    @BindView(R.id.app_bar_layout) AppBarLayout mAppBarLayout;
+    //    @BindView(R.id.search_bar) ViewGroup mSearchBar;
     @BindView(R.id.toolbar) Toolbar mToolbar;
-//    @BindView(R.id.btn_my_location) FrameLayout btnMyLocation;
+    @BindView(R.id.tv_destination) TextView tvDestination;
 
     SupportMapFragment mMapFragment;
     GoogleMap mGoogleMap;
-    MainContract.Presenter mainPresenter;
+    MainMapContract.Presenter mainPresenter;
+
+    @OnClick(R.id.toolbar)
+    void searchAddress() {
+        Intent intent = new Intent(this, SearchAddressActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +124,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_permission) {
+        if (id == R.id.action_my_location) {
+            Location myLocation = mainPresenter.getCurrentLocation();
+            goToLocation(true, myLocation);
             return true;
         } else if (id == R.id.action_log_out) {
             Toast.makeText(this, "Log out", Toast.LENGTH_SHORT).show();
@@ -124,9 +136,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setUpAppBar() {
-        if (mAppBarLayout != null && AndroidApiUtils.hasLollipop()) {
-            mAppBarLayout.setPadding(0, AndroidApiUtils.getStatusBarHeight(this), 0, 0);
-        }
+//        if (mAppBarLayout != null && AndroidApiUtils.hasLollipop()) {
+//            mAppBarLayout.setPadding(0, AndroidApiUtils.getStatusBarHeight(this), 0, 0);
+//        }
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("");
@@ -162,9 +174,7 @@ public class MainActivity extends AppCompatActivity
                 .request(Manifest.permission.ACCESS_FINE_LOCATION)
                 .subscribe(new Observer<Boolean>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
+                    public void onSubscribe(Disposable d) {}
 
                     @Override
                     public void onNext(Boolean granted) {
@@ -182,14 +192,10 @@ public class MainActivity extends AppCompatActivity
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
+                    public void onError(Throwable e) {e.printStackTrace();}
 
                     @Override
-                    public void onComplete() {
-
-                    }
+                    public void onComplete() {}
                 });
     }
 
@@ -197,7 +203,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void askForLocationService(com.google.android.gms.common.api.Status status) {
         try {
-            status.startResolutionForResult(this, MainContract.REQUEST_CODE_LOCATION_SERVICE);
+            status.startResolutionForResult(this, MainMapContract.REQUEST_CODE_LOCATION_SERVICE);
         } catch (IntentSender.SendIntentException e) {
             e.printStackTrace();
         }
@@ -207,7 +213,7 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case MainContract.REQUEST_CODE_LOCATION_SERVICE:
+                case MainMapContract.REQUEST_CODE_LOCATION_SERVICE:
                     mainPresenter.startLocationUpdates();
                     break;
             }
