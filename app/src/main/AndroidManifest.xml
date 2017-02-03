@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="dispatch.digital.fareestimater">
+          package="dispatch.digital.fareestimator">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
-        android:name=".MyApplication"
+        android:name="dispatch.digital.fareestimator.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -14,7 +14,7 @@
         tools:ignore="InnerclassSeparator">
 
         <activity
-            android:name=".MainMap.MainActivity"
+            android:name=".mainMap.MainActivity"
             android:theme="@style/FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -23,12 +23,12 @@
         </activity>
 
         <activity
-            android:name=".SearchAddress.SearchAddressActivity"
-            android:theme="@style/FullScreen"
-            android:parentActivityName=".MainMap.MainActivity">
+            android:name=".searchAddress.SearchAddressActivity"
+            android:parentActivityName=".mainMap.MainActivity"
+            android:theme="@style/FullScreen">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainMap.MainActivity"/>
+                android:value=".mainMap.MainActivity"/>
         </activity>
 
         <meta-data

@@ -1,4 +1,4 @@
-package dispatch.digital.fareestimater.MainMap;
+package dispatch.digital.fareestimator.mainMap;
 
 import android.content.Context;
 import android.location.Location;
@@ -19,8 +19,8 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
-import dispatch.digital.fareestimater.AndroidApiUtils;
-import dispatch.digital.fareestimater.R;
+import dispatch.digital.fareestimator.AndroidApiUtils;
+import dispatch.digital.fareestimator.R;
 import timber.log.Timber;
 
 public class MainPresenter implements MainMapContract.Presenter,

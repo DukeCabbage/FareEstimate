@@ -1,4 +1,4 @@
-package dispatch.digital.fareestimater.MainMap;
+package dispatch.digital.fareestimator.mainMap;
 
 import android.location.Location;
 

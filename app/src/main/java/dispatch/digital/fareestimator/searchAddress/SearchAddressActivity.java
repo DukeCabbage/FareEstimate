@@ -1,4 +1,4 @@
-package dispatch.digital.fareestimater.SearchAddress;
+package dispatch.digital.fareestimator.searchAddress;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,9 +9,20 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
+
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import dispatch.digital.fareestimater.R;
+import dispatch.digital.fareestimator.MyApplication;
+import dispatch.digital.fareestimator.R;
+import dispatch.digital.fareestimator.googleApi.PlaceApi;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import timber.log.Timber;
 
 public class SearchAddressActivity extends AppCompatActivity
         implements SearchAddressContract.View, AddressAdapter.ItemSelectionCallback {
@@ -22,6 +33,7 @@ public class SearchAddressActivity extends AppCompatActivity
 
     private SearchAddressContract.Presenter mPresenter;
     private AddressAdapter mAdapter;
+    private Subscription textChangeSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +62,34 @@ public class SearchAddressActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
+        textChangeSubscription = RxTextView.textChanges(etDestination)
+                .debounce(400, TimeUnit.MILLISECONDS)
+                .filter(new Func1<CharSequence, Boolean>() {
+                    @Override
+                    public Boolean call(CharSequence charSequence) {
+                        return charSequence != null && !charSequence.toString().isEmpty();
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<CharSequence>() {
+                    @Override
+                    public void call(CharSequence charSequence) {
+                        String searchInput = charSequence.toString();
+                        Toast.makeText(SearchAddressActivity.this, searchInput, Toast.LENGTH_SHORT).show();
+                        mPresenter.searchAddress(searchInput);
+
+                        PlaceApi placeApi = MyApplication.getInstance(SearchAddressActivity.this).component().placeApi();
+                        Timber.e("All set up: %b", placeApi != null);
+                    }
+                });
+
         mPresenter.start();
-        mPresenter.searchAddress("Mock");
     }
 
     @Override
     public void onStop() {
         super.onStart();
+        textChangeSubscription.unsubscribe();
         mPresenter.stop();
     }
 

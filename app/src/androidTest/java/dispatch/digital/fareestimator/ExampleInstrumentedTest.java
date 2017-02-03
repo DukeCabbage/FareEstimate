@@ -1,4 +1,4 @@
-package dispatch.digital.fareestimater;
+package dispatch.digital.fareestimator;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

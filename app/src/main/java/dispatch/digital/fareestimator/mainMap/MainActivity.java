@@ -1,4 +1,4 @@
-package dispatch.digital.fareestimater.MainMap;
+package dispatch.digital.fareestimator.mainMap;
 
 import android.Manifest;
 import android.app.Activity;
@@ -28,9 +28,9 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import dispatch.digital.fareestimater.AndroidApiUtils;
-import dispatch.digital.fareestimater.R;
-import dispatch.digital.fareestimater.SearchAddress.SearchAddressActivity;
+import dispatch.digital.fareestimator.AndroidApiUtils;
+import dispatch.digital.fareestimator.R;
+import dispatch.digital.fareestimator.searchAddress.SearchAddressActivity;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;

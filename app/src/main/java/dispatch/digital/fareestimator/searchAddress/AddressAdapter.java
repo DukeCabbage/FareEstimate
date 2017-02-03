@@ -1,4 +1,4 @@
-package dispatch.digital.fareestimater.SearchAddress;
+package dispatch.digital.fareestimator.searchAddress;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import dispatch.digital.fareestimater.R;
+import dispatch.digital.fareestimator.R;
 
 public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHolder> {
 

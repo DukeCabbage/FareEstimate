@@ -1,4 +1,4 @@
-package dispatch.digital.fareestimater;
+package dispatch.digital.fareestimator;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package dispatch.digital.fareestimater.SearchAddress;
+package dispatch.digital.fareestimator.searchAddress;
 
 
 public interface SearchAddressContract {

@@ -1,4 +1,4 @@
-package dispatch.digital.fareestimater;
+package dispatch.digital.fareestimator;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
