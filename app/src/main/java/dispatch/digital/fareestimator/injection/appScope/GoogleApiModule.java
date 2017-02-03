@@ -8,7 +8,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import dispatch.digital.fareestimator.googleApi.GoogleMapsAPIAuthInterceptor;
-import dispatch.digital.fareestimator.googleApi.PlaceApi;
+import dispatch.digital.fareestimator.googleApi.place.PlaceApi;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;

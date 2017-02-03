@@ -15,7 +15,7 @@ public class NetworkModule {
     @Singleton
     protected HttpLoggingInterceptor providesLoggingInterceptor() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
         return logging;
     }
 

@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import dispatch.digital.fareestimator.googleApi.PlaceApi;
+import dispatch.digital.fareestimator.googleApi.place.PlaceApi;
 
 @Singleton
 @Component(modules = {

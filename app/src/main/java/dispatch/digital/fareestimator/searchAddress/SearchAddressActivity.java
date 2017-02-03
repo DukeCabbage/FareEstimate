@@ -11,13 +11,16 @@ import android.widget.Toast;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dispatch.digital.fareestimator.MyApplication;
 import dispatch.digital.fareestimator.R;
-import dispatch.digital.fareestimator.googleApi.PlaceApi;
+import dispatch.digital.fareestimator.googleApi.place.PlaceApi;
+import dispatch.digital.fareestimator.googleApi.place.addressbean.Result;
+import dispatch.digital.fareestimator.googleApi.place.placeautocompletebean.Prediction;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -42,7 +45,8 @@ public class SearchAddressActivity extends AppCompatActivity
         ButterKnife.bind(this);
         setUpAppBar();
 
-        mPresenter = new SearchAddressPresenter(this, this);
+        PlaceApi placeApi = MyApplication.getInstance(SearchAddressActivity.this).component().placeApi();
+        mPresenter = new SearchAddressPresenter(this, this, placeApi);
 
         rvAddressResults.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new AddressAdapter(this);
@@ -75,11 +79,7 @@ public class SearchAddressActivity extends AppCompatActivity
                     @Override
                     public void call(CharSequence charSequence) {
                         String searchInput = charSequence.toString();
-                        Toast.makeText(SearchAddressActivity.this, searchInput, Toast.LENGTH_SHORT).show();
-                        mPresenter.searchAddress(searchInput);
-
-                        PlaceApi placeApi = MyApplication.getInstance(SearchAddressActivity.this).component().placeApi();
-                        Timber.e("All set up: %b", placeApi != null);
+                        mPresenter.autoCompletePlace(searchInput);
                     }
                 });
 
@@ -94,8 +94,13 @@ public class SearchAddressActivity extends AppCompatActivity
     }
 
     @Override
-    public void showSearchResults(String[] results) {
+    public void showAutoCompleteResults(List<Prediction> results) {
         mAdapter.setDataset(results);
+    }
+
+    @Override
+    public void showPlaceDetailResult(Result result) {
+        Timber.i("Chosen destination: %f, %f", result.geometry.location.lat, result.geometry.location.lng);
     }
 
     @Override
@@ -117,7 +122,8 @@ public class SearchAddressActivity extends AppCompatActivity
     }
 
     @Override
-    public void onAddressSelected(String addressName) {
-        Toast.makeText(this, addressName, Toast.LENGTH_SHORT).show();
+    public void onAddressSelected(Prediction prediction) {
+        Toast.makeText(this, prediction.getDescription(), Toast.LENGTH_SHORT).show();
+        mPresenter.searchPlaceDetail(prediction.getPlaceId());
     }
 }

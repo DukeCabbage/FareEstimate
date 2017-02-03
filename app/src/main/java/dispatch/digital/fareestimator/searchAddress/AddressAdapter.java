@@ -7,14 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dispatch.digital.fareestimator.R;
+import dispatch.digital.fareestimator.googleApi.place.placeautocompletebean.Prediction;
 
 public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHolder> {
 
     final private ItemSelectionCallback mCallback;
-    private String[] mDataset;
+    private List<Prediction> mDataset;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -25,13 +28,13 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
             ButterKnife.bind(this, itemView);
         }
 
-        public void setData(String data) {
-            tvAddress.setText(data);
+        public void setData(Prediction data) {
+            tvAddress.setText(data.getDescription());
         }
     }
 
     interface ItemSelectionCallback {
-        void onAddressSelected(String addressName);
+        void onAddressSelected(Prediction prediction);
     }
 
     public AddressAdapter(@NonNull ItemSelectionCallback selectionCallback) {
@@ -46,21 +49,22 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.setData(mDataset[position]);
+        final Prediction data = mDataset.get(position);
+        holder.setData(data);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCallback.onAddressSelected(mDataset[holder.getAdapterPosition()]);
+                mCallback.onAddressSelected(data);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mDataset == null ? 0 : mDataset.length;
+        return mDataset == null ? 0 : mDataset.size();
     }
 
-    public void setDataset(String[] dataset) {
+    public void setDataset(List<Prediction> dataset) {
         if (dataset == null) return;
         mDataset = dataset;
         notifyDataSetChanged();
